@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "73143413-cf1b-4813-bfb4-2c73ae213c41",
+		"name": "Security Regression",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User information leak",
+			"item": [
+				{
+					"name": "Login with user 4",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"emailAddress\": \"test@example.com\",\n\t\"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "localhost:1337/api/v1/entrance/login",
+							"host": [
+								"localhost"
+							],
+							"port": "1337",
+							"path": [
+								"api",
+								"v1",
+								"entrance",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get information for user 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e98eaf0f-c39c-4e34-b8b4-15c984263bcd",
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"User 4 trying to access user 4 information should return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response should not contain password\", function () {",
+									"    pm.expect(response.password).to.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:1337/api/v1/users/4",
+							"host": [
+								"localhost"
+							],
+							"port": "1337",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get information for user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e98eaf0f-c39c-4e34-b8b4-15c984263bcd",
+								"exec": [
+									"pm.test(\"User 4 trying to access user 2 information should return 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:1337/api/v1/users/2",
+							"host": [
+								"localhost"
+							],
+							"port": "1337",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
